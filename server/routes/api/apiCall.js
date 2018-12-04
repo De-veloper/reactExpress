@@ -3,9 +3,14 @@ var router = express.Router();
 
 /* GET additem page. */
 router.get('/', function(req, res, next) {
-    res.send('Please enter id -> /id/:id');
+    res.render('api', { title: 'All API is here' });
 });
-router.get('/id/:id', function(req, res, next) {
+
+
+router.get('/getid/', function(req, res, next) {
+    res.send('Enter id in url');
+});
+router.get('/getid/:id', function(req, res, next) {
     var id = req.params.id
     res.send(id);
 });
