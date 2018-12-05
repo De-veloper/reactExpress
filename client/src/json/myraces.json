@@ -1,0 +1,59 @@
+{
+    "list":[
+        {
+            "name":"Corona Del Mar 5K",
+            "date":"6/3/2017",
+            "distance":"5K"
+        },
+        {
+            "name":"Ragnar So Cal",
+            "date":"4/6/2018",
+            "distance":"Relay"
+        },
+        {
+            "name":"OC Duathlon ",
+            "date":"6/3/2018",
+            "distance":"Olympic"
+        },
+        {
+            "name":"Lace Up",
+            "date":"9/8/2018",
+            "distance":"Marathon Relay"
+        },
+        {
+            "name":"Newport DunesSprint Triathlon",
+            "date":"11/4/2018",
+            "distance":"Sprint Triathlon"
+        },
+        {
+            "name":"Terrain Race",
+            "date":"11/17/2018",
+            "distance":"Obstacles 5K"
+        },
+        {
+            "name":"Irvine Half",
+            "date":"1/12/2019",
+            "distance":"Half Marathon"
+        },
+        {
+            "name":"Ragnar So Cal",
+            "date":"4/16/2019",
+            "distance":"Relay"
+        },
+        {
+            "name":"OC Marathon",
+            "date":"5/5/2019",
+            "distance":"Full Marathon"
+        },
+        {
+            "name":"OC Triathlon ",
+            "date":"6/2/2019",
+            "distance":"Olympic"
+        },
+        {
+            "name":"Treat or Tri ",
+            "date":"10/26/2019",
+            "distance":"70.3"
+        }
+    ]
+}

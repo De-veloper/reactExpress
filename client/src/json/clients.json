@@ -1,0 +1,22 @@
+{
+    "list":[
+        {
+            "client":"USC",
+            "desktop":"",
+            "mobile":"",
+            "version":"8.03"
+        },
+        {
+            "client":"PITT",
+            "desktop":"",
+            "mobile":"",
+            "version":"8.03"
+        },
+        {
+            "client":"KANSUSE",
+            "desktop":"",
+            "mobile":"",
+            "version":"8.03"
+        }
+    ]
+}

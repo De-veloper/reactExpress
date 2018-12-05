@@ -1,0 +1,9 @@
+{
+    "bike":[
+        {
+            "brand":"BMC",
+            "model":"Alr01",
+            "img":["/img/bikes/BMC_Alr01_1.jpg"]
+        }
+    ]
+}

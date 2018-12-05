@@ -1,26 +1,29 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+//Import route
+import { Switch, Route } from 'react-router-dom'
+
+//Import Component
+import Origin from './ui/pages/OriginalPage';
+import Bikes from './ui/pages/Bikes';
+import Home from './ui/pages/Home';
+import Refs from './ui/pages/Refs/index';
+import FormTest from './ui/pages/Playground/form';
+import ClientList from './ui/pages/ClientList';
+import MyRaces from './ui/pages/MyRaces';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+        <Switch>
+          <Route exact path='/bikes' component={Bikes}/>
+          <Route exact path='/' component={Home}/>
+          <Route exact path='/origin' component={Origin}/>
+          <Route exact path='/refs' component={Refs}/>
+          <Route exact path='/formtest' component={FormTest}/>
+          <Route exact path='/clientlist' component={ClientList}/>
+          <Route exact path='/myraces' component={MyRaces}/>
+        </Switch>
     );
   }
 }
