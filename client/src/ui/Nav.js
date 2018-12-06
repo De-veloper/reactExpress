@@ -27,6 +27,10 @@ const navList = [
     {
         url:'/myraces',
         title:'My Races'
+    },
+    {
+        url:'/pixelcms',
+        title:'Pixel CMS'
     }
 ]
 class Nav extends Component{
@@ -34,8 +38,8 @@ class Nav extends Component{
         return (
                 <ul className="nav">
                     {
-                        navList.map((e)=>
-                            <li><Link to={{ pathname: e.url }}>{e.title}</Link></li>
+                        navList.map((e,i)=>
+                            <li key={i}><Link to={{ pathname: e.url }}>{e.title}</Link></li>
                         )
                     }
                 </ul>

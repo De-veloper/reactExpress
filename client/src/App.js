@@ -11,6 +11,7 @@ import Refs from './ui/pages/Refs/index';
 import FormTest from './ui/pages/Playground/form';
 import ClientList from './ui/pages/ClientList';
 import MyRaces from './ui/pages/MyRaces';
+import pixelCMS from './ui/pages/pixelCMS';
 
 class App extends Component {
   render() {
@@ -23,6 +24,7 @@ class App extends Component {
           <Route exact path='/formtest' component={FormTest}/>
           <Route exact path='/clientlist' component={ClientList}/>
           <Route exact path='/myraces' component={MyRaces}/>
+          <Route exact path='/pixelcms' component={pixelCMS}/>
         </Switch>
     );
   }
