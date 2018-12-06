@@ -27,7 +27,7 @@ app.use('/users', usersRouter);
 //------------------------custom 
 //API call
 app.use('/api/', apiRouter);
-app.use('/api/id', apiRouter);
+//app.use('/api/getid', apiRouter);
 //------------------------------
 
 // catch 404 and forward to error handler

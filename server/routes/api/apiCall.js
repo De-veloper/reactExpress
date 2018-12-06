@@ -7,12 +7,18 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.get('/getid/', function(req, res, next) {
+router.get('/get/', function(req, res, next) {
     res.send('Enter id in url');
 });
-router.get('/getid/:id', function(req, res, next) {
+router.get('/get/:id', function(req, res, next) {
     var id = req.params.id
     res.send(id);
 });
 
+
+router.post('/post/', function(req, res, next) {
+    var getName = req.body.name;
+    //res.send('en');
+    res.json({ message: 'Bear created!' });
+});
 module.exports = router;
