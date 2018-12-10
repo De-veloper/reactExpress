@@ -13,7 +13,13 @@ router.get('/', function(req, res, next) {
 
 /* Submit */
 router.get('/submit/', function(req, res, next) {
-    res.json({ message: 'got!' });
+    //res.json({ message: 'got!' });
+    fs.readFile(pixelFile, 'utf-8', function(err, data) {
+        if (err) throw err
+        var arrayOfObjects = JSON.parse(data)
+        console.log(arrayOfObjects)
+        res.json(arrayOfObjects);
+    })
 }).post('/submit/', function(req, res, next) {
     var getName = req.body.name;
     res.json({ message: 'Created!' });
