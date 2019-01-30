@@ -59,17 +59,19 @@ router.get('/', function(req, res, next) {
             return finalWordsArray;
           
           }
-          console.log(data)
+          //console.log(data)
         var wordsArray = splitByWords(data);
         var wordsMap = createWordMap(wordsArray);
         var finalWordsArray = sortByCount(wordsMap);
 
-        console.log(finalWordsArray);
-        console.log('The word "' + finalWordsArray[0].name + '" appears the most in the file ' +
-            finalWordsArray[0].total + ' times');
+        //console.log(finalWordsArray);
+        //console.log('The word "' + finalWordsArray[0].name + '" appears the most in the file ' +
+        //    finalWordsArray[0].total + ' times');
+
+        res.render('api', { title: 'All API is here', message:data.replace(/ /g,'&nbsp;').replace(/\n/g,'<br>') });
     });
     //end TODO
-    res.render('api', { title: 'All API is here' });
+    //res.render('api', { title: 'All API is here' });
 });
 
 
