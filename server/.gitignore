@@ -13,6 +13,8 @@
 
 #python
 /python
+#routes
+/routes/connect.js
 # misc
 .DS_Store
 .env.local

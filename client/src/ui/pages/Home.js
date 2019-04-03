@@ -16,6 +16,12 @@ class Home extends Component{
                 <p>7. Pixel CMS</p>
                 <p>8. My races</p>
                 <p>9. Added express server (<a rel="noopener noreferrer" href="https://www.codementor.io/kakarganpat/how-to-setup-react-and-node-js-in-a-project-koxwqbssl" target="_blank">Setup react with express</a>)</p>
+                <p>
+                    Plan:<br/>
+                    - Show all client ->  select client -> show live pixels -> Edit/Delete/Add<br/>
+                    - Search live pixel by clients
+            
+                </p>
             </div>
             
         )

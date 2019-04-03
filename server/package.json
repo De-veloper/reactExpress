@@ -6,6 +6,7 @@
     "start": "nodemon ./bin/www"
   },
   "dependencies": {
+    "child_process": "^1.0.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
@@ -13,7 +14,11 @@
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",
     "fs": "0.0.1-security",
-    "nodemon": "^1.18.7"
+    "nodemon": "^1.18.7",
+    "python-shell": "^0.5.0",
+    "remote": "^0.2.6",
+    "request": "^2.85.0",
+    "ssh2-sftp-client": "^2.2.1"
   },
   "main": "app.js",
   "devDependencies": {},
