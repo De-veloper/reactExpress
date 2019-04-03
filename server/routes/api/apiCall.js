@@ -116,13 +116,6 @@ router.get('/', function(req, res, next) {
 */
 var Client = require('ssh2').Client;
 
-/*var connectionInfo = {
-  host:'172.31.100.25',
-  port: 22,
-  username: 'webdev',
-  password: 'r@1d3r'
-}*/
-
 //List (To get all the clients)
 router.get('/list', function(req, res, next) {
     var conn = new Client();
