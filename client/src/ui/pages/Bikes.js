@@ -17,7 +17,7 @@ class Bikes extends Component {
   
     render(){
       return (
-        <div >
+        <div className="container" >
           <Header titleTxt="Bikes"/>
         
         <p>

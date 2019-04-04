@@ -6,7 +6,7 @@ import {HyperLink} from '../../component/common/global';
 class Refs extends Component{
     render(){
         return (
-            <div>
+            <div className="container">
                 <Header titleTxt="References"/>
                 <ul>
                     <li><HyperLink href="https://daveceddia.com/where-initialize-state-react/" target="_blank" text="Two ways to initialize state"/></li>

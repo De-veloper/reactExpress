@@ -9,7 +9,7 @@ class Races extends Component{
     
     render(){
         return (
-            <div>
+            <div className="container">
                 <Header titleTxt="My Races"/>
                 <h1>Upcoming</h1>
                 {(this.state?this.state['list'].map((e)=>{

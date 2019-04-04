@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 
+import 'bootstrap/dist/css/bootstrap.css';
+import './index.css';
 //React route
 //import {Router, Route} from 'react-router';
 //V3 Route Ref: https://scotch.io/tutorials/routing-react-apps-the-complete-guide

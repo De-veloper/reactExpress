@@ -14,7 +14,7 @@ class FormTest extends Component{
     }
     render(){
         return (
-            <div>
+            <div className="container">
                 <Header titleTxt="Form Test"/>
                 Input: <input type="text" placeholder={this.state.defaultVal} onChange={(e)=>this.handleChange(e)}/>
             </div>

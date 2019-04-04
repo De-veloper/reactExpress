@@ -140,7 +140,8 @@ router.get('/list', function(req, res, next) {
         });
     }).connect(connectionInfo);
 });
-//Test for view each client's pixels.js
+
+//View each client's pixels.js - Done
 //http://localhost:3001/api/viewpixel
 //http://localhost:3001/api/viewpixel/pitt
 router.get('/viewpixel/:clientid', function(req, res, next) {
@@ -164,6 +165,41 @@ router.get('/viewpixel/:clientid', function(req, res, next) {
 
                       sftp.readFile(filePath, 'utf-8', function (err, data) {
                           res.json(data);
+                      });
+                  });
+              } else {
+                  res.render('api', { title: 'Review Live pixels.js file', message:'No such this client' });
+              }
+
+          });
+      });
+  }).connect(connectionInfo);
+});
+//View each client's json - Done
+//http://localhost:3001/api/viewpixeljson
+//http://localhost:3001/api/viewpixeljson/pitt
+router.get('/viewpixeljson/:clientid', function(req, res, next) {
+  var conn = new Client();
+  var clientID = req.params.clientid;
+  var filePath = '/home/webdev/evenue/customize/ev_'+clientID+'/pixel/json/client-pixel.json'
+  conn.on('ready', function() {
+      console.log('Client :: ready');
+      conn.sftp(function(err, sftp) {
+          //if (err) throw err;
+          sftp.readdir('/home/webdev/evenue/customize/', function(err, list) {
+              var folderList = list.map(function(e){ return e.filename.replace('ev_','')})
+              var isClientExist = folderList.indexOf(clientID)>-1
+              if(isClientExist){
+                  sftp.readdir('/home/webdev/evenue/customize/ev_'+clientID, function(err, list) {
+                      var folderList = list.map(function(e){ return e.filename})
+                      var isPixelFolderExist = folderList.indexOf('pixel')>-1
+
+                      sftp.readFile(filePath, 'utf-8', function (err, data) {
+                          if(!isPixelFolderExist){
+                              res.json(err);
+                          } else {
+                              res.json(JSON.parse(data));
+                          }
                       });
                   });
               } else {

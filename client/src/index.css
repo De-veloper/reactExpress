@@ -19,20 +19,6 @@ code {
   padding:0;
 }
 body {
-  background: #282c34;
+  background: #343a40;
   color:#61dafb;
-}
-a {
-  color:#61dafb
-}
-.header {
-  background:#fff;
-  padding: 10px;
-}
-ul.nav {
-  list-style: none;
-}
-ul.nav li{
-  display: inline;
-  padding: 5px;
 }

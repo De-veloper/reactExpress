@@ -36,14 +36,15 @@ const navList = [
 class Nav extends Component{
     render(){
         return (
-                <ul className="nav">
+            <nav className="navbar navbar-expand-sm bg-light">
+                <ul className="navbar-nav">
                     {
                         navList.map((e,i)=>
-                            <li key={i}><Link to={{ pathname: e.url }}>{e.title}</Link></li>
+                            <li className="nav-item" key={i}><Link className="nav-link" to={{ pathname: e.url }}>{e.title}</Link></li>
                         )
                     }
                 </ul>
-            
+            </nav>
         )
     }
 }

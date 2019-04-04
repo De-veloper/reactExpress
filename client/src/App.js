@@ -23,8 +23,10 @@ class App extends Component {
           <Route exact path='/refs' component={Refs}/>
           <Route exact path='/formtest' component={FormTest}/>
           <Route exact path='/clientlist' component={ClientList}/>
+          <Route exact path='/clientlist/:clientID' component={ClientList}/>
           <Route exact path='/myraces' component={MyRaces}/>
           <Route exact path='/pixelcms' component={PixelCMS}/>
+          <Route exact path='/pixelcms/:clientID' component={PixelCMS}/>
         </Switch>
     );
   }
