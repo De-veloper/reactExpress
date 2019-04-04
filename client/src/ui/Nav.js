@@ -21,12 +21,12 @@ const navList = [
         title:'Form Test'
     },
     {
-        url:'/clientlist',
-        title:'Client List'
-    },
-    {
         url:'/myraces',
         title:'My Races'
+    },
+    {
+        url:'/clientlist',
+        title:'Client List'
     },
     {
         url:'/pixelcms',

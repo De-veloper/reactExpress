@@ -9,17 +9,19 @@ class PixelCMS extends Component{
 
     //Show pixel json
     showPixelJson(clientID){
-        fetch('/api/viewpixeljson/'+clientID)
-        .then(results=>{
-            return results.json();
-        }).then(data=>{
-            this.setState({
-                pixelfileJson:data
-            });
-
-            this.buildPixelForm(data)
-            
-        })
+        if(typeof clientID!=='undefined'){
+            fetch('/api/viewpixeljson/'+clientID)
+            .then(results=>{
+                return results.json();
+            }).then(data=>{
+                this.setState({
+                    pixelfileJson:data
+                });
+    
+                this.buildPixelForm(data)
+                
+            })
+        }
     }
 
 
@@ -37,10 +39,10 @@ class PixelCMS extends Component{
             return thisHTML;
 
         }
-        if(typeof obj['FB']!='undefined') {
+        if(typeof obj['FB']!=='undefined') {
             thisHTML +='<h2>Face Book</h2>';
             for(var f=0; f<obj['FB'].length;f++){
-                var theObj = obj['FB'][f];
+                let theObj = obj['FB'][f];
                 thisHTML +='<div>case number: '+theObj.case+'</div>';
                 thisHTML +='<div>date time: '+theObj.datetime+'</div>';
                 thisHTML +='<div>id: '+theObj.id+'</div>';
@@ -49,10 +51,10 @@ class PixelCMS extends Component{
             }
             
         }
-        if(typeof obj['GA']!='undefined') {
+        if(typeof obj['GA']!=='undefined') {
             thisHTML +='<h2>Google Adwords</h2>';
             for(var g=0; g<obj['GA'].length;g++){
-                var theObj = obj['GA'][g];
+                let theObj = obj['GA'][g];
                 thisHTML +='<div>case number: '+theObj.case+'</div>';
                 thisHTML +='<div>date time: '+theObj.datetime+'</div>';
                 thisHTML +='<div>id: '+theObj.id+'</div>';
@@ -64,10 +66,10 @@ class PixelCMS extends Component{
                 thisHTML +='<hr/>';
             }
         }
-        if(typeof obj['DC']!='undefined') {
+        if(typeof obj['DC']!=='undefined') {
             thisHTML +='<h2>Double Click</h2>';
             for(var d=0; d<obj['DC'].length;d++){
-                var theObj = obj['DC'][d];
+                let theObj = obj['DC'][d];
                 thisHTML +='<div>case number: '+theObj.case+'</div>';
                 thisHTML +='<div>date time: '+theObj.datetime+'</div>';
                 thisHTML +='<div>id: '+theObj.id+'</div>';
@@ -84,7 +86,7 @@ class PixelCMS extends Component{
         if(typeof obj['Quantcast']!='undefined') {
             thisHTML +='<h2>Quantcast</h2>';
             for(var q=0; q<obj['Quantcast'].length;q++){
-                var theObj = obj['Quantcast'][q];
+                let theObj = obj['Quantcast'][q];
                 thisHTML +='<div>case number: '+theObj.case+'</div>';
                 thisHTML +='<div>date time: '+theObj.datetime+'</div>';
                 thisHTML +='<div>id: '+theObj.id+'</div>';
@@ -103,12 +105,13 @@ class PixelCMS extends Component{
     }
     componentDidMount() {
         //this.showPixelFile()
-        if(this.props.match.params.clientID!='') this.showPixelJson(this.props.match.params.clientID)
+        if(this.props.match.params.clientID!=='') this.showPixelJson(this.props.match.params.clientID)
     }
     render(){
         return (
             <div className="container">
                 <Header titleTxt="Pixel CMS"/>
+                Search Pixel: <input type="text" className="form-control" placeholder="pixel key work"/><button className="btn btn-primary">Search</button>
                 {(this.props.match.params.clientID?<div id="pixelForm"><div className="spinner-border" role="status"><span className="sr-only">Loading...</span></div></div>:'')}
             </div>
             

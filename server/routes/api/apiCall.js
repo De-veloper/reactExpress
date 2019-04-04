@@ -141,6 +141,95 @@ router.get('/list', function(req, res, next) {
     }).connect(connectionInfo);
 });
 
+//Count Pixel by Client - TODO WIP
+//http://localhost:3001/api/searchpixel/pitt
+router.get('/searchpixel/:pixel', function(req, res, next) {
+    let conn = new Client();
+    let pixelString = req.params.pixel;
+    let final = []
+   // let filePath = '/home/webdev/evenue/customize/ev_'+clientID+'/script/pixels.js'
+    conn.on('ready', function() {
+        console.log('Client :: ready');
+        conn.sftp(function(err, sftp) {
+            if (err) throw err;
+            
+            sftp.readdir('/home/webdev/evenue/customize/', function(err, list) {
+                
+                var folderList = list.map(function(e){ 
+                    return e.filename.replace('ev_','')
+                })
+                folderList = folderList.filter(function(e){
+                    if(!/[0-9]/i.test(e)){
+                        return e
+                    }
+                })
+
+                //folderList = ['umass']
+                //console.log(folderList)
+                console.log('------------------------------------------')
+                folderList.forEach(function(clientID){
+                    
+                    //console.log(clientID)
+                    try {
+                        sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/pixel/js/pixels.js', 'utf-8', function (err, data) {
+                            
+                            //console.log(data)
+                            if(typeof data!='undefined'){
+                                var count = (data.match(/pixel_lib.DoubleClickPixel/g) || []).length;
+                                final.push({clientID:count})
+                            } else {
+                                
+                            }
+
+                        });
+                        sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/script/pixels.js', 'utf-8', function (err, data) {
+                            
+                            //console.log(data)
+                            if(typeof data!='undefined'){
+                                var count = (data.match(/pixel_lib.DoubleClickPixel/g) || []).length;
+                                final.push({clientID:count})
+                                //console.log(final)
+                            } else {
+                                //console.log(clientID+':no1')
+                            }
+
+                        });
+                        
+                    } catch(e) {
+                        console.log(e)
+                        
+                    }
+                })
+                
+                
+               
+            });
+            
+
+
+
+        });
+    }).connect(connectionInfo);
+});
+/*Single client
+router.get('/searchpixel/:pixel', function(req, res, next) {
+    let conn = new Client();
+    let pixelString = req.params.pixel;
+    //let count = 0;
+    conn.on('ready', function() {
+        console.log('Client :: ready');
+        conn.sftp(function(err, sftp) {
+            if (err) throw err;
+            sftp.readFile('/home/webdev/evenue/customize/ev_occ/pixel/js/pixels.js', 'utf-8', function (err, data) {
+                var count = (data.match(/pixel_lib.DoubleClickPixel/g) || []).length;
+                console.log(count)
+            });
+
+        });
+    }).connect(connectionInfo);
+});*/
+
+
 //View each client's pixels.js - Done
 //http://localhost:3001/api/viewpixel
 //http://localhost:3001/api/viewpixel/pitt

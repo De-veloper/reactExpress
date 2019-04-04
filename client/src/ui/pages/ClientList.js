@@ -11,23 +11,26 @@ class ClientList extends Component{
 
     getAllLiveClients (){
         //http://localhost:3001/api/list/
-        fetch('/api/list/')
-        .then(results=>{
-            return results.json();
-        }).then(data=>{
-            //console.log(data)
-            let oriArr = data.folderData
-            let clientArr = []
-            oriArr.map(function(e){
-                if(!/_|test/i.test(e)){
-                    clientArr.push(e)
-                }
-            });
-            this.setState({
-                clientList:clientArr
-            });
-            
-        })
+        //if(this.state.clientList.length<1){
+            fetch('/api/list/')
+            .then(results=>{
+                return results.json();
+            }).then(data=>{
+                //console.log(data)
+                let oriArr = data.folderData
+                let clientArr = []
+                oriArr.map(function(e){
+                    if(!/_|test/i.test(e)){
+                        clientArr.push(e)
+                    }
+                });
+                this.setState({
+                    clientList:clientArr
+                });
+                
+            })
+        //}
+
     }
     //Show pixel json
     showPixelJson(clientID){
@@ -49,7 +52,7 @@ class ClientList extends Component{
             .then(results=>{
                 return results.json();
             }).then(data=>{
-                var splitByWords = function(text) {
+               /* var splitByWords = function(text) {
                     // split string by spaces (including spaces, tabs, and newlines)
                     var wordsArray = text.split(/\s+/);
                     return wordsArray;
@@ -88,10 +91,10 @@ class ClientList extends Component{
                     return finalWordsArray;
                   
                 }
-                var wordsArray = splitByWords(data);
-                var wordsMap = createWordMap(wordsArray);
-                var finalWordsArray = sortByCount(wordsMap);
-                //console.log(finalWordsArray)
+                //var wordsArray = splitByWords(data);
+                //var wordsMap = createWordMap(wordsArray);
+                //var finalWordsArray = sortByCount(wordsMap);
+                //console.log(finalWordsArray)*/
                 
                 this.setState({
                     pixelfile:data.replace(/ /g,'&nbsp;').replace(/\n/g,'<br>')
@@ -103,7 +106,7 @@ class ClientList extends Component{
     }
     componentDidMount() {
         this.getAllLiveClients()
-        if(this.props.match.params.clientID!='') this.showPixelFile(this.props.match.params.clientID)
+        if(this.props.match.params.clientID!=='') this.showPixelFile(this.props.match.params.clientID)
         //this.showPixelFile()
     }
     render(){
