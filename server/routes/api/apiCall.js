@@ -9,6 +9,7 @@ var connectionInfo = require('./../connect.js');
 //File Path
 var pixelFile = './public/json/pixel.json';//data for exercise
 
+const http = require('http');
 
 /* API main page */
 /* Submit */
@@ -110,7 +111,62 @@ router.get('/', function(req, res, next) {
 });
 
 
+//get a external url page source
+router.get('/get_active_clients', function(req, res, next) {
+    //Using In_Play_Status_Page to obtain the active clients
+    http.get('http://172.16.100.189/bigip/In_Play_Status_Page/index.html', (resp) => {
+        let data = '';
 
+        // A chunk of data has been recieved.
+        resp.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        // The whole response has been received. Print out the result.
+        resp.on('end', () => {
+            var splitByWords = function(text) {
+                // split string by spaces (including spaces, tabs, and newlines)
+                var wordsArray = text.split(/\s+/);
+                return wordsArray;
+              }
+              
+              var createWordMap = function(wordsArray) {
+                // create map for word counts
+                var wordsMap = {};
+                wordsArray.forEach(function (key) {
+                  if (wordsMap.hasOwnProperty(key)) {
+                    wordsMap[key]++;
+                  } else {
+                    wordsMap[key] = 1;
+                  }
+                });
+              
+                return wordsMap;
+              
+              }
+              
+            var wordsArray = splitByWords(data);
+            var wordsMap = createWordMap(wordsArray);
+
+            var keys = [];
+            for(var k in wordsMap) keys.push(k);
+            var activeClient = keys.filter(function(e){
+                if(/color=darkblue>/i.test(e)) {
+                    return e
+                }
+            }).map(function(e){
+                e = e.replace(/color=darkblue>|<\/a><\/td><td/g,'')
+                return e
+            })
+            res.json(activeClient);
+            //res.render('api', { title: 'Play Status Page Source', message:activeClient });
+        });
+
+    }).on("error", (err) => {
+        console.log("Error: " + err.message);
+    });
+
+})
 /*
 * Connect to server
 */
@@ -140,6 +196,9 @@ router.get('/list', function(req, res, next) {
         });
     }).connect(connectionInfo);
 });
+
+//TODO Get active accounts
+//http://172.16.100.189/bigip/In_Play_Status_Page/index.html
 
 //Count Pixel by Client - TODO WIP
 //http://localhost:3001/api/searchpixel/pitt

@@ -25,10 +25,6 @@ const navList = [
         title:'My Races'
     },
     {
-        url:'/clientlist',
-        title:'Client List'
-    },
-    {
         url:'/pixelcms',
         title:'Pixel CMS'
     }
