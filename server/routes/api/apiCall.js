@@ -201,74 +201,207 @@ router.get('/list', function(req, res, next) {
 //http://172.16.100.189/bigip/In_Play_Status_Page/index.html
 
 //Count Pixel by Client - TODO WIP
-//http://localhost:3001/api/searchpixel/pitt
-router.get('/searchpixel/:pixel', function(req, res, next) {
+//http://localhost:3001/api/searchpixel/pixel_lib.DoubleClickPixel
+router.get('/searchpixel/:pixel/:clientID', function(req, res, next) {
     let conn = new Client();
-    let pixelString = req.params.pixel;
+    let pixelString = req.params.pixel;//pixel_lib.DoubleClickPixel
+    let clientID = req.params.clientID
     let final = []
-   // let filePath = '/home/webdev/evenue/customize/ev_'+clientID+'/script/pixels.js'
-    conn.on('ready', function() {
-        console.log('Client :: ready');
-        conn.sftp(function(err, sftp) {
-            if (err) throw err;
-            
-            sftp.readdir('/home/webdev/evenue/customize/', function(err, list) {
-                
-                var folderList = list.map(function(e){ 
-                    return e.filename.replace('ev_','')
-                })
-                folderList = folderList.filter(function(e){
-                    if(!/[0-9]/i.test(e)){
+    ///-------------------
+    //console.log(pixelString)
+    if(clientID){
+        conn.on('ready', function() {
+            console.log('Client :: ready1');
+            conn.sftp(function(err, sftp) {
+                if (err) throw err;
+                console.log('------------------------------------------')
+                // console.log(clientID)
+                try {
+                    sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/pixel/js/pixels.js', 'utf-8', function (err, data) {
+                        
+                        //console.log(data)
+                        if(typeof data!='undefined'){
+                            var replace = pixelString;
+                            var re = new RegExp(replace,"g");
+                            var count = (data.match(re) || []).length;
+                            
+                            
+                            let finalData = {
+                                folderData:{
+                                    client:clientID,
+                                    pixel:pixelString,
+                                    pcount:count
+                                }
+                            }
+                            //console.log(finalData)
+                            res.json(finalData);
+                        } else {
+                            sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/script/pixels.js', 'utf-8', function (err, data) {
+                        
+                                //console.log(data)
+                                if(typeof data!='undefined'){
+                                    var replace = pixelString;
+                                    var re = new RegExp(replace,"g");
+                                    var count = (data.match(re) || []).length;
+                                    
+                                    
+                                    let finalData = {
+                                        folderData:{
+                                            client:clientID,
+                                            pixel:pixelString,
+                                            pcount:count
+                                        }
+                                    }
+                                    res.json(finalData);
+                                } else {
+                                    let finalData = {
+                                        folderData:{
+                                            code:2
+                                        }
+                                    }
+                                    //console.log(finalData)
+                                    res.json(finalData);
+                                }
+                                
+                            });
+                            
+                        }
+
+                    });
+                    /*sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/script/pixels.js', 'utf-8', function (err, data) {
+                        
+                        //console.log(data)
+                        if(typeof data!='undefined'){
+                            var count = (data.match(/pixel_lib.DoubleClickPixel/g) || []).length;
+                            final.push(
+                                {client:clientID,
+                                pcount:count}
+                            )
+                            console.log(final)
+                            //console.log(final)
+                        } else {
+                            //console.log(clientID+':no1')
+                        }
+                        
+                    });*/
+                } catch(e) {
+                    console.log(e)
+                    
+                }
+            });
+        }).connect(connectionInfo);
+    } else {
+        http.get('http://172.16.100.189/bigip/In_Play_Status_Page/index.html', (resp) => {
+            let data = '';
+    
+            // A chunk of data has been recieved.
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+    
+            // The whole response has been received. Print out the result.
+            resp.on('end', () => {
+                var splitByWords = function(text) {
+                    // split string by spaces (including spaces, tabs, and newlines)
+                    var wordsArray = text.split(/\s+/);
+                    return wordsArray;
+                  }
+                  
+                  var createWordMap = function(wordsArray) {
+                    // create map for word counts
+                    var wordsMap = {};
+                    wordsArray.forEach(function (key) {
+                      if (wordsMap.hasOwnProperty(key)) {
+                        wordsMap[key]++;
+                      } else {
+                        wordsMap[key] = 1;
+                      }
+                    });
+                  
+                    return wordsMap;
+                  
+                  }
+                  
+                var wordsArray = splitByWords(data);
+                var wordsMap = createWordMap(wordsArray);
+    
+                var keys = [];
+                for(var k in wordsMap) keys.push(k);
+                var activeClient = keys.filter(function(e){
+                    if(/color=darkblue>/i.test(e)) {
                         return e
                     }
+                }).map(function(e){
+                    e = e.replace(/color=darkblue>|<\/a><\/td><td/g,'')
+                    return e
                 })
-
-                //folderList = ['umass']
-                //console.log(folderList)
-                console.log('------------------------------------------')
-                folderList.forEach(function(clientID){
-                    
-                    //console.log(clientID)
-                    try {
-                        sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/pixel/js/pixels.js', 'utf-8', function (err, data) {
+                //console.log(activeClient)
+    
+                //Start to search
+                
+                conn.on('ready', function() {
+                    console.log('Client :: ready');
+                    conn.sftp(function(err, sftp) {
+                        if (err) throw err;
+                        console.log('------------------------------------------')
+                        activeClient.forEach(function(clientID){
                             
-                            //console.log(data)
-                            if(typeof data!='undefined'){
-                                var count = (data.match(/pixel_lib.DoubleClickPixel/g) || []).length;
-                                final.push({clientID:count})
-                            } else {
+                            // console.log(clientID)
+                            try {
+                                sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/pixel/js/pixels.js', 'utf-8', function (err, data) {
+                                    
+                                    //console.log(data)
+                                    if(typeof data!='undefined'){
+                                        var replace = pixelString;
+                                        var re = new RegExp(replace,"g");
+                                        var count = (data.match(re) || []).length;
+                                        
+                                        
+                                        let finalData = {
+                                            folderData:final.push(
+                                                {
+                                                    client:clientID,
+                                                    pcount:count
+                                                }
+                                            )
+                                        }
+                                        //console.log(finalData)
+                                       // res.json(finalData);
+                                    
+                                    } 
+    
+                                })
+                                /*sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/script/pixels.js', 'utf-8', function (err, data) {
+                                    
+                                    //console.log(data)
+                                    if(typeof data!='undefined'){
+                                        var count = (data.match(/pixel_lib.DoubleClickPixel/g) || []).length;
+                                        final.push(
+                                            {client:clientID,
+                                            pcount:count}
+                                        )
+                                        console.log(final)
+                                        //console.log(final)
+                                    } else {
+                                        //console.log(clientID+':no1')
+                                    }
+                                    
+                                });*/
+                            } catch(e) {
+                                console.log(e)
                                 
                             }
-
-                        });
-                        sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/script/pixels.js', 'utf-8', function (err, data) {
-                            
-                            //console.log(data)
-                            if(typeof data!='undefined'){
-                                var count = (data.match(/pixel_lib.DoubleClickPixel/g) || []).length;
-                                final.push({clientID:count})
-                                //console.log(final)
-                            } else {
-                                //console.log(clientID+':no1')
-                            }
-
-                        });
-                        
-                    } catch(e) {
-                        console.log(e)
-                        
-                    }
-                })
-                
-                
-               
+                        })
+                    });
+                }).connect(connectionInfo);
             });
-            
-
-
-
+    
+        }).on("error", (err) => {
+            console.log("Error: " + err.message);
         });
-    }).connect(connectionInfo);
+    }
+
+
 });
 /*Single client
 router.get('/searchpixel/:pixel', function(req, res, next) {

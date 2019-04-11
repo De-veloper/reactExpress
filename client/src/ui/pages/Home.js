@@ -12,12 +12,12 @@ class Home extends Component{
             {status:'Done',task:'List all my clients'},
             {status:'',task:'Redux for all nav '},
             {status:'',task:'Redux Saga'},
-            {status:'',task:'Pixel CMS'},
+            {status:'WIP',task:'Pixel CMS'},
             {status:'',task:'My races'},
             {status:'',task:'Added express server (<a rel="noopener noreferrer" href="https://www.codementor.io/kakarganpat/how-to-setup-react-and-node-js-in-a-project-koxwqbssl" target="_blank">Setup react with express</a>)'},
             {status:'',task:'connect to AWS'},
             {status:'',task:'count pixels for each client'},
-            {status:'',task:'Get active accounts (<a rel="noopener noreferrer" href="http://172.16.100.189/bigip/In_Play_Status_Page/index.html" target="_blank">In Play Status</a>)'}
+            {status:'Done',task:'Get active accounts (<a rel="noopener noreferrer" href="http://172.16.100.189/bigip/In_Play_Status_Page/index.html" target="_blank">In Play Status</a>)'}
         ]
     }
 

@@ -7,18 +7,22 @@ class PixelCMS extends Component{
     state = {
         pixelObj:{},
         clientList:'',
-        breadcrumb : [{
-            static:'Pixel CMS',
-            link:'<a href="/pixelcms/">Pixel CMS</a>'
-        }]
+        pixelSearch:'',
+        pixelSearchBar:false
     }
     getAllLiveClients (){
         fetch('/api/get_active_clients/')
         .then(results=>{
             return results.json();
         }).then(data=>{
+            let clientObj = data.map(function(e){
+                return {
+                    client:e,
+                    pixelcount:0
+                }
+            })
             this.setState({
-                clientList:data
+                clientList:clientObj
             });
             
         })
@@ -57,15 +61,64 @@ class PixelCMS extends Component{
         }
 
     }
-    createBreadCrumb(){
-        /*let breadcrumb = [{
-            static:'Pixel CMS',
-            link:'<a href="/pixelcms/">Pixel CMS</a>'
-        }];
-        
+    searchInputUpdate(e){
+        var newValue = e.target.value;
         this.setState({
-            breadcrumb:breadcrumb
-        });*/
+            pixelSearch:newValue
+        });
+    }
+    searchPixelByClient(pixel,clientID){
+        if(typeof pixel!='undefined'){
+            
+            fetch('/api/searchpixel/'+pixel+'/'+clientID)
+            .then(results=>{
+                
+                return results.json();
+            }).then(data=>{
+                this.setState({
+                    test:data
+                });
+                console.log(this.state)
+            })
+        }
+    }
+    createBreadCrumb(){
+
+        let breadcrumb = '';
+        if(this.props.match.params.file){
+
+            breadcrumb = <div>
+                <a href="/pixelcms/">Pixel CMS</a> > 
+                <a href="/pixelcms/clientlist/">Client List</a> > 
+                <a href={"/pixelcms/clientlist/"+this.props.match.params.clientID}>{this.props.match.params.clientID}</a> > 
+                <span>{this.props.match.params.file}</span>
+            </div>
+
+        } else if(this.props.match.params.clientID){
+
+            breadcrumb = <div>
+                <a href="/pixelcms/">Pixel CMS</a> > 
+                <a href="/pixelcms/clientlist/">Client List</a> > 
+                <span>{this.props.match.params.clientID}</span>
+            </div>
+
+        } else if (/clientlist/i.test(this.props.match.url)){
+
+            breadcrumb = <div>
+                <a href="/pixelcms/">Pixel CMS</a> > 
+                <span href="/pixelcms/clientlist/">Client List</span> 
+            </div>
+
+
+        } else {
+
+
+            breadcrumb = <div>
+                <span href="/pixelcms/">Pixel CMS</span> 
+            </div>
+
+        }
+        return breadcrumb
     }
 
     //https://okcciviccenter.evenue.net/www/ev_occ/ss/evenue/customize/ev_occ/pixel/json/client-pixel.json
@@ -164,37 +217,38 @@ class PixelCMS extends Component{
 
     componentDidMount() {
         this.getAllLiveClients()
-        //this.createBreadCrumb()
-        
-        console.log(this.state)
         if(this.props.match.params.clientID!=='' && this.props.match.params.file==='json') this.showPixelJson(this.props.match.params.clientID)
         if(this.props.match.params.clientID!=='') {
             if(this.props.match.params.file==='json') this.showPixelJson(this.props.match.params.clientID)
             if(this.props.match.params.file==='pixel') this.showPixelFile(this.props.match.params.clientID)
         }
+        if(this.props.match.params.clientID && typeof this.props.match.params.file == 'undefined'){
+            this.setState({
+                pixelSearchBar:true
+            });
+        } else {
+            this.setState({
+                pixelSearchBar:false
+            })
+        }
 
     }
 
-
-    //breadcrumb
-    /*
-                    {!/clientlist/i.test(this.props.match.url)?<span>Pixel CMS</span>:<span><a href="/pixelcms/">Pixel CMS</a> > <a href="/pixelcms/clientlist/">Client List</a> </span>}
-                {(this.props.match.params.clientID?<span> > {this.props.match.params.clientID}</span>:'')}
-                {(this.props.match.params.file?<span> > {this.props.match.params.file}</span>:'')}
-                */
     render(){
         return (
             <div className="container">
                 <Header titleTxt="Pixel CMS"/>
-                Search Pixel: <input type="text" className="form-control" placeholder="pixel key work"/><button className="btn btn-primary">Search</button>
-                
-                <hr/>
-                <div dangerouslySetInnerHTML={{ __html: this.state.breadcrumb[0].static}}/>
-                
+    
+                {this.createBreadCrumb()}
 
                 {
                     ( this.props.match.params.clientID ?<div>
-                    <h2>{this.props.match.params.clientID}</h2>
+                    <h1>{this.props.match.params.clientID}</h1>
+
+                    {(this.state.pixelSearchBar?<div>Search Pixel: <input type="text" className="form-control" onChange={(e)=>this.searchInputUpdate(e)}placeholder="pixel key work"/><button onClick={()=>this.searchPixelByClient(this.state.pixelSearch,this.props.match.params.clientID)} className="btn btn-primary">Search</button></div>:'')}
+                    {(this.state.pixelSearchBar && this.state.test?(typeof this.state.test.folderData.code!=='undefined' && this.state.test.folderData.code==2?<div>No results</div>:<div>Search Result: {this.state.test.folderData.pixel} - {this.state.test.folderData.pcount} times</div>):'')}
+                
+
                     {( typeof this.props.match.params.file === 'undefined'?<div><a href={"/pixelcms/clientlist/"+this.props.match.params.clientID+"/pixel"} onClick={()=>{
                                         this.showPixelFile(this.props.match.params.clientID)}
                                     }>pixels.js</a> | <a href={"/pixelcms/clientlist/"+this.props.match.params.clientID+"/json"}>json</a></div>:'')}
@@ -211,7 +265,7 @@ class PixelCMS extends Component{
                         {
                             (this.state.clientList?this.state.clientList.map((e,i)=>
                             <div key={i}>
-                                    <label><a href={"/pixelcms/clientlist/"+e}>{e}</a></label>  
+                                    <label><a href={"/pixelcms/clientlist/"+e.client}>{e.client}</a></label>  
                                 </div>
                             ):<div className="spinner-border" role="status"><span className="sr-only">Loading...</span></div>)
                         }

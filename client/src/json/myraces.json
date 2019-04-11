@@ -1,6 +1,11 @@
 {
     "list":[
         {
+            "name":"Ironman 70.3 Santa Cruz",
+            "date":"9/8/2019",
+            "distance":"70.3"
+        },
+        {
             "name":"Corona Del Mar 5K",
             "date":"6/3/2017",
             "distance":"5K"

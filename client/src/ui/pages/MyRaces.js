@@ -12,7 +12,11 @@ class Races extends Component{
             <div className="container">
                 <Header titleTxt="My Races"/>
                 <h1>Upcoming</h1>
-                {(this.state?this.state['list'].map((e)=>{
+                {(this.state?this.state['list'].sort(function(a,b){
+                    // Turn your strings into dates, and then subtract them
+                    // to get a value that is either negative, positive, or zero.
+                    return new Date(a.date) - new Date(b.date);
+                  }).map((e)=>{
                     var today = new Date();
                     var raceDate = new Date(e.date)
                     if(today<raceDate){
@@ -34,7 +38,11 @@ class Races extends Component{
                 <hr/>
                 <br/>
                 <h1>Past</h1>
-                {(this.state?this.state['list'].map((e)=>{
+                {(this.state?this.state['list'].sort(function(a,b){
+                    // Turn your strings into dates, and then subtract them
+                    // to get a value that is either negative, positive, or zero.
+                    return new Date(b.date) - new Date(a.date);
+                  }).map((e)=>{
                     var today = new Date();
                     var raceDate = new Date(e.date)
                     if(today>raceDate){
