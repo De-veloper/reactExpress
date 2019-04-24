@@ -1,6 +1,16 @@
 {
     "list":[
         {
+            "name":"OWS",
+            "date":"4/27/2019",
+            "distance":"1 mile"
+        },
+        {
+            "name":"OWS",
+            "date":"5/11/2019",
+            "distance":"1 mile"
+        },
+        {
             "name":"Ironman 70.3 Santa Cruz",
             "date":"9/8/2019",
             "distance":"70.3"
@@ -42,7 +52,7 @@
         },
         {
             "name":"Ragnar So Cal",
-            "date":"4/16/2019",
+            "date":"4/12/2019",
             "distance":"Relay"
         },
         {
@@ -56,7 +66,7 @@
             "distance":"Olympic"
         },
         {
-            "name":"Treat or Tri ",
+            "name":"Trick or Tri ",
             "date":"10/26/2019",
             "distance":"70.3"
         }

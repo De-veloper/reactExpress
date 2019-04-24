@@ -54,7 +54,7 @@ class PixelCMS extends Component{
             }).then(data=>{
 
                 this.setState({
-                    pixelfile:data.replace(/ /g,'&nbsp;').replace(/\n/g,'<br>')
+                    pixelfile:data
                 });
                 
             })
@@ -82,6 +82,23 @@ class PixelCMS extends Component{
             })
         }
     }
+
+    searchPixelForAll(pixel){
+        if(typeof pixel!='undefined'){
+            
+            fetch('/api/searchpixel/'+pixel)
+            .then(results=>{
+                
+                return results.json();
+            }).then(data=>{
+                this.setState({
+                    pixelSearchResult:data
+                });
+                console.log(this.state)
+            })
+        }
+    }
+
     createBreadCrumb(){
 
         let breadcrumb = '';
@@ -130,10 +147,10 @@ class PixelCMS extends Component{
             let text = obj.text || ''
             let value = obj.value || ''
             let html = ''+
-            '<div class="form-group row">'+
+            '<div className="form-group row">'+
             '    <label for="'+id+'" class="col-sm-2 col-form-label">'+text+'</label>'+
-            '    <div class="col-sm-10">'+
-            '    <input type="text" readonly class="form-control-plaintext" id="'+id+'" value="'+value+'">'+
+            '    <div className="col-sm-10">'+
+            '    <input type="text" readonly className="form-control-plaintext" id="'+id+'" value="'+value+'">'+
             '    </div>'+
             '</div>';
             
@@ -238,37 +255,72 @@ class PixelCMS extends Component{
         return (
             <div className="container">
                 <Header titleTxt="Pixel CMS"/>
-    
-                {this.createBreadCrumb()}
 
+                {this.createBreadCrumb()}
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="btn btn-primary">Search Pixel</span>
+                    </div>
+                    <input type="text" className="form-control" onChange={(e)=>this.searchInputUpdate(e)} placeholder="pixel key work" aria-label="pixel key work"/>
+                    <div className="input-group-append">
+                        <button className="btn btn-primary" type="button" onClick={()=>this.searchPixelForAll(this.state.pixelSearch)} >Search</button>
+                    </div>
+                </div>
+                {this.state.pixelSearchResult?<div><h2>Search Keywork: {this.state.pixelSearch}</h2>{this.state.pixelSearchResult.map((e,i)=> { if(e.pcount!==0) return <div>{e.client}: {e.pcount}</div>})}</div>:<div className="spinner-border" role="status"><span className="sr-only">Loading...</span></div>}
                 {
                     ( this.props.match.params.clientID ?<div>
-                    <h1>{this.props.match.params.clientID}</h1>
+                        <h1>{this.props.match.params.clientID}</h1>
 
-                    {(this.state.pixelSearchBar?<div>Search Pixel: <input type="text" className="form-control" onChange={(e)=>this.searchInputUpdate(e)}placeholder="pixel key work"/><button onClick={()=>this.searchPixelByClient(this.state.pixelSearch,this.props.match.params.clientID)} className="btn btn-primary">Search</button></div>:'')}
-                    {(this.state.pixelSearchBar && this.state.test?(typeof this.state.test.folderData.code!=='undefined' && this.state.test.folderData.code==2?<div>No results</div>:<div>Search Result: {this.state.test.folderData.pixel} - {this.state.test.folderData.pcount} times</div>):'')}
+                        {(this.state.pixelSearchBar?<div>
+                            <div className="input-group mb-3">
+                                <div className="input-group-prepend">
+                                    <span className="btn btn-primary">Search Pixel</span>
+                                </div>
+                                <input type="text" className="form-control" onChange={(e)=>this.searchInputUpdate(e)} placeholder="pixel key work" aria-label="pixel key work"/>
+                                <div className="input-group-append">
+                                    <button className="btn btn-primary" type="button" onClick={()=>this.searchPixelByClient(this.state.pixelSearch,this.props.match.params.clientID)} >Search</button>
+                                </div>
+                            </div> 
+                            
+                            {(this.state.test?(typeof this.state.test.folderData.code!=='undefined' && this.state.test.folderData.code===2?<div>No results</div>:<div>Search Result: {this.state.test.folderData.pixel} - {this.state.test.folderData.pcount} time{(this.state.test.folderData.pcount===1?'':'s')} (source: /{this.state.test.folderData.folder}/pixels.js)</div>):'')}
+                        </div>:'')}
+                        
                 
 
-                    {( typeof this.props.match.params.file === 'undefined'?<div><a href={"/pixelcms/clientlist/"+this.props.match.params.clientID+"/pixel"} onClick={()=>{
+                        {( typeof this.props.match.params.file === 'undefined'?
+                            <ul className="list-group">
+                                <li className="list-group-item">
+                                    <a href={"/pixelcms/clientlist/"+this.props.match.params.clientID+"/pixel"} onClick={()=>{
                                         this.showPixelFile(this.props.match.params.clientID)}
-                                    }>pixels.js</a> | <a href={"/pixelcms/clientlist/"+this.props.match.params.clientID+"/json"}>json</a></div>:'')}
+                                    }>pixels.js</a>
+                                </li>
+                                <li className="list-group-item">
+                                    json (not available){/*<a href={"/pixelcms/clientlist/"+this.props.match.params.clientID+"/json"}>*/}
+                                </li>
+                            </ul>:'')}
                     </div>:'')
                 }
                 {( (this.props.match.params.clientID && this.props.match.params.file === 'json')?<div id="pixelForm"><div className="spinner-border" role="status"><span className="sr-only">Loading...</span></div></div>:'')}
-                {( (this.props.match.params.clientID && this.props.match.params.file==='pixel')?(this.state.pixelfile?<div dangerouslySetInnerHTML={{ __html: this.state.pixelfile}}/>:<div className="spinner-border" role="status"><span className="sr-only">Loading...</span></div>):'')}
+                {( (this.props.match.params.clientID && this.props.match.params.file==='pixel')?(this.state.pixelfile?<div><span>source: /{this.state.pixelfile.folder}/pixel.js</span><br/><div dangerouslySetInnerHTML={{ __html: this.state.pixelfile.data.replace(/ /g,'&nbsp;').replace(/\n/g,'<br>')}}/></div>:<div className="spinner-border" role="status"><span className="sr-only">Loading...</span></div>):'')}
 
 
-                { (/clientlist/i.test(this.props.match.url)?(this.props.match.params.clientID===undefined?<h1>Client List</h1>:''):<h1><a href="/pixelcms/clientlist">Client List</a></h1>)}
+                { 
+                    (/clientlist/i.test(this.props.match.url)?'':<ul className="list-group"><li className="list-group-item"><h3><a href="/pixelcms/clientlist">Client List</a> (Total:{(this.state.clientList?this.state.clientList.length:'' )})</h3></li></ul>)
+                }
+                
                 {
                     ( (/clientlist/i.test(this.props.match.url) && this.props.match.params.clientID===undefined)?<div>
-                        <h3>Total:{(this.state.clientList?this.state.clientList.length:'' )}</h3>
-                        {
-                            (this.state.clientList?this.state.clientList.map((e,i)=>
-                            <div key={i}>
-                                    <label><a href={"/pixelcms/clientlist/"+e.client}>{e.client}</a></label>  
-                                </div>
-                            ):<div className="spinner-border" role="status"><span className="sr-only">Loading...</span></div>)
-                        }
+                        
+                        <ul className="list-group">
+                            <li className="list-group-item"><h4>Client List (Total:{(this.state.clientList?this.state.clientList.length:'' )})</h4></li>
+                            {
+                                (this.state.clientList?this.state.clientList.map((e,i)=>
+                                    <li className="list-group-item" key={i}>
+                                        <label><a href={"/pixelcms/clientlist/"+e.client}>{e.client}</a></label>  
+                                    </li>
+                                ):<div className="spinner-border" role="status"><span className="sr-only">Loading...</span></div>)
+                            }
+                        </ul>
                     </div>:''
                     )
                 }
