@@ -204,19 +204,19 @@ router.get('/list', function(req, res, next) {
 router.get('/searchpixel/:pixel/:clientID', function(req, res, next) {
     let conn = new Client();
     let pixelString = req.params.pixel;//pixel_lib.DoubleClickPixel
-    let clientID = req.params.clientID
-    let final = []
+    let clientID = req.params.clientID;
+    //slet final = []
     ///-------------------
     //console.log(pixelString)
-    if(clientID){
+    if(typeof req.params.clientID==='string' && !/devsrc72|awstest|cicd72-amtx|cicd80-amtx|baylortest/i.test(req.params.clientID) ){
         conn.on('ready', function() {
-            console.log('Client :: ready1');
+            //console.log('Client :: ready1');
             conn.sftp(function(err, sftp) {
                 if (err) throw err;
-                console.log('------------------------------------------')
+                console.log('----------------Start:'+clientID+'-------------------------')
                 // console.log(clientID)
                 try {
-                    sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/pixel/js/pixels.js', 'utf-8', function (err, data) {
+                    sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/script/pixels.js', 'utf-8', function (err, data) {
                         
                         //console.log(data)
                         if(typeof data!='undefined'){
@@ -230,13 +230,14 @@ router.get('/searchpixel/:pixel/:clientID', function(req, res, next) {
                                     client:clientID,
                                     pixel:pixelString,
                                     pcount:count,
-                                    folder:'pixel'
+                                    folder:'script'
                                 }
                             }
                             //console.log(finalData)
+                            console.log('----------------End:'+clientID+'-------------------------')
                             res.json(finalData);
                         } else {
-                            sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/script/pixels.js', 'utf-8', function (err, data) {
+                            sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/pixel/js/pixels.js', 'utf-8', function (err, data) {
                         
                                 //console.log(data)
                                 if(typeof data!='undefined'){
@@ -250,17 +251,27 @@ router.get('/searchpixel/:pixel/:clientID', function(req, res, next) {
                                             client:clientID,
                                             pixel:pixelString,
                                             pcount:count,
-                                            folder:'script'
+                                            folder:'pixel'
                                         }
                                     }
+                                    console.log('----------------End:'+clientID+'-------------------------')
                                     res.json(finalData);
                                 } else {
-                                    let finalData = {
+                                    /*let finalData = {
                                         folderData:{
                                             code:2
                                         }
                                     }
-                                    //console.log(finalData)
+                                    res.json(finalData);*/
+                                    console.log('//----'+clientID+'-----//')
+                                    let finalData = {
+                                        folderData:{
+                                            client:clientID,
+                                            pixel:pixelString,
+                                            pcount:0,
+                                            folder:''
+                                        }
+                                    }
                                     res.json(finalData);
                                 }
                                 
@@ -270,6 +281,7 @@ router.get('/searchpixel/:pixel/:clientID', function(req, res, next) {
 
                     });
                 } catch(e) {
+                    console.log('//----NO NO NO-----//')
                     console.log(e)
                     
                 }
@@ -277,7 +289,13 @@ router.get('/searchpixel/:pixel/:clientID', function(req, res, next) {
         }).connect(connectionInfo);
     } else {
 
-
+        res.json({
+            folderData:{
+                code:2
+            }
+        });
+        console.log(e)
+        
     }
 
 
@@ -286,6 +304,7 @@ router.get('/searchpixel/:pixel/:clientID', function(req, res, next) {
 //TODO Get active accounts
 //http://172.16.100.189/bigip/In_Play_Status_Page/index.html
 //Search all clients by certain pixel WIP
+/*
 router.get('/searchpixel/:pixel', function(req, res, next) {
     let conn = new Client();
     let pixelString = req.params.pixel;
@@ -351,31 +370,6 @@ router.get('/searchpixel/:pixel', function(req, res, next) {
                         } 
                     })
                 })
-
-                /*return sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/script/pixels.js', 'utf-8', function (err, data) {
-                    if(typeof data!='undefined'){
-                        var replace = pixelString;
-                        var re = new RegExp(replace,"g");
-                        count = (data.match(re) || []).length;
-                        return count;
-                    } 
-                })*/
-                /*try {
-                    sftp.readFile('/home/webdev/evenue/customize/ev_'+clientID+'/script/pixels.js', 'utf-8', function (err, data) {
-                        if(typeof data!='undefined'){
-                            var replace = pixelString;
-                            var re = new RegExp(replace,"g");
-                            count = (data.match(re) || []).length;
-                            test(count)
-                            return count
-                        } 
-                    })
-                } catch(e) {
-                    console.log(e)
-                    
-                }
-
-                return count*/
             }
             
             let final = [];
@@ -407,14 +401,6 @@ router.get('/searchpixel/:pixel', function(req, res, next) {
                         }
                         console.log(final)
                     }
-                    /*for(let t = 0; t <activeClient.length; t++){
-                        final.push({ client:activeClient[t],pcount:0})
-                        processFile(sftp,activeClient[t],pixelString).then(function(count) { final[activeClient[t]].pcount = count});
-                    }*/
-                    /*setTimeout(function(){
-                        clearInterval(myVar)
-                        res.json(final);
-                    },activeClient.length*500)*/
                     
 
                 });
@@ -425,7 +411,7 @@ router.get('/searchpixel/:pixel', function(req, res, next) {
         console.log("Error: " + err.message);
     });
 });
-
+*/
 
 //View each client's pixels.js - Done
 //http://localhost:3001/api/viewpixel

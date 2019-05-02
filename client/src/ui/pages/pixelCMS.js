@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 
 import Header from '../Header';
 
-
 class PixelCMS extends Component{
     state = {
         pixelObj:{},
         clientList:'',
         pixelSearch:'',
-        pixelSearchBar:false
+        pixelSearchBar:false,
+        pixelSearchResult:[]
     }
     getAllLiveClients (){
         fetch('/api/get_active_clients/')
@@ -21,6 +21,7 @@ class PixelCMS extends Component{
                     pixelcount:0
                 }
             })
+           // console.log(clientObj)
             this.setState({
                 clientList:clientObj
             });
@@ -82,20 +83,55 @@ class PixelCMS extends Component{
             })
         }
     }
+    /*
+    const request = async () => {
+        const response = await fetch('https://api.com/values/1');
+        const json = await response.json();
+        console.log(json);
+    }
 
-    searchPixelForAll(pixel){
-        if(typeof pixel!='undefined'){
-            
-            fetch('/api/searchpixel/'+pixel)
-            .then(results=>{
+    request();
+    */
+    searchPixelForAll(pixel,allclients){
+        if(typeof pixel!=='undefined'){
+            const request = async (path) => {
+                const response = await fetch(path);
+                const data = await response.json();
                 
-                return results.json();
-            }).then(data=>{
-                this.setState({
-                    pixelSearchResult:data
-                });
-                console.log(this.state)
-            })
+                if(data.folderData.code!==2){
+                    this.setState({
+                        pixelSearchResult:[...this.state.pixelSearchResult,data.folderData]
+                    });
+                }
+            }
+
+            for(var c = 0; c <80; c++){
+                if(!/devsrc72|awstest|cicd72-amtx|cicd80-amtx|baylortest/i.test(allclients[c].client)){
+                    console.log(allclients[c].client)
+                    let path = '/api/searchpixel/'+pixel+'/'+allclients[c].client;
+                    request(path);
+                }
+
+            }
+
+            
+            // for(var c = 0; c <80; c++){ //allclients.length
+            //     fetch('/api/searchpixel/'+pixel+'/'+allclients[c].client)
+            //     .then(results=>{
+            //         return results.json();
+
+            //     }).then(data=>{
+                    
+            //         if(data.folderData.code!==2){
+            //             this.setState({
+            //                 pixelSearchResult:[...this.state.pixelSearchResult,data.folderData]
+            //             });
+            //         }
+            //         //console.log(this.state)
+            //     })
+
+            // }
+
         }
     }
 
@@ -257,16 +293,25 @@ class PixelCMS extends Component{
                 <Header titleTxt="Pixel CMS"/>
 
                 {this.createBreadCrumb()}
+                
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
                         <span className="btn btn-primary">Search Pixel</span>
                     </div>
                     <input type="text" className="form-control" onChange={(e)=>this.searchInputUpdate(e)} placeholder="pixel key work" aria-label="pixel key work"/>
                     <div className="input-group-append">
-                        <button className="btn btn-primary" type="button" onClick={()=>this.searchPixelForAll(this.state.pixelSearch)} >Search</button>
+                        <button className="btn btn-primary" type="button" onClick={()=>this.searchPixelForAll(this.state.pixelSearch,this.state.clientList)} >Search</button>
                     </div>
                 </div>
+
+                {(this.state.pixelSearchResult.length>0?this.state.pixelSearchResult.map((e,i)=> <div key={i}>{e.client}: {e.pcount}</div>):'')}
+                
+                
+               
+                {/*
+                
                 {this.state.pixelSearchResult?<div><h2>Search Keywork: {this.state.pixelSearch}</h2>{this.state.pixelSearchResult.map((e,i)=> { if(e.pcount!==0) return <div>{e.client}: {e.pcount}</div>})}</div>:<div className="spinner-border" role="status"><span className="sr-only">Loading...</span></div>}
+                */}
                 {
                     ( this.props.match.params.clientID ?<div>
                         <h1>{this.props.match.params.clientID}</h1>
